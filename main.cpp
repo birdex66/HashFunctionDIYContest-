@@ -80,7 +80,7 @@ int main(int argc, char** argv) {
 	}
 
 	HashSlot* hashTable =  new HashSlot[k];
-	int lf = ceil(n/(k/1.0));
+	int lf = (int)ceil(n/(k/1.0));
 
 	makeSet(hashTable,texts,k,n,lf);
 
