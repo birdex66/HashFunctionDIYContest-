@@ -38,6 +38,8 @@ int main() {
 
     // Your time to shine starts now
 
+    cout << "check check" << endl;
+
     cout << "==== Printing the contents of the first 5 slots ====" << endl;
 
     cout << "==== Printing the slot lengths ====" << endl;
