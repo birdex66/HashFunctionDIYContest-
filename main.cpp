@@ -60,32 +60,37 @@ int main(int argc, char** argv) {
 
 	file.open(argv[1]);
 
-	getline(file,line);
-
-	k = stoi(line);
 
 	if(file.is_open()){
+		cout<<endl;
+		getline(file,line);
+
+		k = stoi(line);
+
 		while(getline(file,line)){
+			//cout << line << " ";
 			texts[n] = line; 
 			++n;
 		}
+		cout<<"k: " << k << " n: " << n << endl;
+		cout<<"load factor: " << ceil(n/(k/1.0)) << endl;
 	}else{
-		cerr << "Error opening " << argv[1] << endl;
+		cerr << "Error opening " << argv[1] << "!" << endl;
 		return 2;	
 	}
 
-	/*
-	HashSlot* hashTable;
-	makeSet(hashTable,k,n);
+	HashSlot* hashTable =  new HashSlot[k];
+	int lf = ceil(n/(k/1.0));
 
-	sort(hashTable,texts,k,n);		
+	makeSet(hashTable,texts,k,n,lf);
 
-	cout << "==== Printing the contents of the first 5 slots ====" << endl;
+	printSet(hashTable,k,n,lf);
 
-	cout << "==== Printing the slot lengths ====" << endl;
+	//cout << "==== Printing the contents of the first 5 slots ====" << endl;
 
-	cout << "==== Printing the standard variance =====" << endl;
+	//cout << "==== Printing the slot lengths ====" << endl;
+
+	//cout << "==== Printing the standard variance =====" << endl;
 
 	return 0;
-	*/
 }
