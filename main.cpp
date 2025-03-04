@@ -8,17 +8,20 @@ Your team alias:
 #include <iostream>
 #include <iomanip>
 #include <string>
+
+#include <fstream>
+
 #include "hash.h"
 #include "hash.cpp"
 using namespace std;
 
-int main() {
+int main(int argc, char** argv) {
 	/*
 
 
-	int k = 0;
-	int n = 0;
-	string texts[500];
+	   int k = 0;
+	   int n = 0;
+	   string texts[500];
 
 	// WARNING: Start of the tokenizer that loads the input from std::cin, DO NOT change this part!
 	cin >> k;
@@ -26,8 +29,8 @@ int main() {
 	getline(cin, line);
 
 	while (getline(cin, line)) {
-		texts[n] = line;
-		n++;
+	texts[n] = line;
+	n++;
 	}
 	// WARNING: End of the tokenizer, DO NOT change this part!
 
@@ -41,12 +44,41 @@ int main() {
 
 	// Your time to shine starts now
 	*/
-	int k = 3;
-	int n = 3;
+
+	if(argc < 2){
+		cerr << "Must specify an input file!!" << endl;
+		return 1;
+	}
+
+	ifstream file;
+	string line;
+
+	int k = 0;
+	int n = 0;
+	string texts[500];
 
 
+	file.open(argv[1]);
+
+	getline(file,line);
+
+	k = stoi(line);
+
+	if(file.is_open()){
+		while(getline(file,line)){
+			texts[n] = line; 
+			++n;
+		}
+	}else{
+		cerr << "Error opening " << argv[1] << endl;
+		return 2;	
+	}
+
+	/*
 	HashSlot* hashTable;
 	makeSet(hashTable,k,n);
+
+	sort(hashTable,texts,k,n);		
 
 	cout << "==== Printing the contents of the first 5 slots ====" << endl;
 
@@ -55,4 +87,5 @@ int main() {
 	cout << "==== Printing the standard variance =====" << endl;
 
 	return 0;
+	*/
 }
