@@ -19,7 +19,7 @@ struct HashSlot{
 };
 
 
-int hash_function(string text,int k);
+int hash_function(string text,int k,int lf);
 void makeSet(HashSlot* hashTable,string* str,int k,int n,int lf);
-void printSet(HashSlot* hashTable,int k,int n,int lf);
+void printSet(HashSlot* hashTable,int k,int n);
 #endif

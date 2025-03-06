@@ -84,7 +84,7 @@ int main(int argc, char** argv) {
 
 	makeSet(hashTable,texts,k,n,lf);
 
-	printSet(hashTable,k,n,lf);
+	printSet(hashTable,k,n);
 
 	//cout << "==== Printing the contents of the first 5 slots ====" << endl;
 

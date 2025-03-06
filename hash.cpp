@@ -4,9 +4,21 @@
 
 using namespace std;
 
-int hash_function(string text,int k) {
+int hash_function(string text,int k,int lf) {
 
-	int slot  = (text.length()-1) % k;
+	//int slot  = (text.length()-1) % k;
+	int slot=0,j=0;
+
+	while(j<k){
+               // slot = ((text[j] - '0') * (int)pow(31,j++)) % k;
+		//slot = (slot + ((text[j] - '0') * (int)pow(31,j++)) % k) % k;
+               	int calc = (slot + ((text[j] - '0') * (int)pow(31, j)) % k)%k ;
+		if(calc < 0) break;
+		else slot = calc;
+		j++;
+		cout << slot << endl;
+        }
+
 	cout << text << ": " << slot << endl;
 	return slot;
 }
@@ -29,7 +41,7 @@ void makeSet(HashSlot* hashTable,string* str,int k,int n,int lf){
 	   */
 
 	for(int i=0; i<n; ++i){
-		int slot = hash_function(str[i],k);
+		int slot = hash_function(str[i],k,lf);
 			//cout << "slot:" << slot << " " <<  str[i] << endl;
 
 		if(hashTable[slot].value == NULL){
@@ -43,7 +55,7 @@ void makeSet(HashSlot* hashTable,string* str,int k,int n,int lf){
 	}
 }	
 
-void printSet(HashSlot* hashTable,int k,int n,int lf){
+void printSet(HashSlot* hashTable,int k,int n){
 	cout<<endl;
 	for(int i=0; i<k; ++i){
 		cout << "Slot " << i << ": ";
