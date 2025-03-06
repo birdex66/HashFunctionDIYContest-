@@ -14,12 +14,23 @@ struct Node{
 };
 
 struct HashSlot{
+	int length;
 	int key;
 	Node* value;
 };
 
+/*
+class LinkedList{
+	public:
+		LinkedList(int length,Node* head);
+		int getLength(){return length;}
+	private:
+		int length;
+                Node* head;
 
-int hash_function(string text,int k,int lf);
+};
+*/
+int hash_function(string text,int k,HashSlot* hashTable,int ranges[],int lf);
 void makeSet(HashSlot* hashTable,string* str,int k,int n,int lf);
 void printSet(HashSlot* hashTable,int k,int n);
 #endif

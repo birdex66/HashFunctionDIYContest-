@@ -79,6 +79,7 @@ int main(int argc, char** argv) {
 		return 2;	
 	}
 
+	
 	HashSlot* hashTable =  new HashSlot[k];
 	int lf = (int)ceil(n/(k/1.0));
 
