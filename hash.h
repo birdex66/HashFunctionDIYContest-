@@ -22,7 +22,7 @@ struct HashSlot{
 int findConsonants(string str);
 double getMean(const int* cons,const int n);
 double getStdev(const int* cons,const double mean,const int n);
-int hash_functionLessThirty(const string text,const int k);
+int hash_functionLessThirty(HashSlot* hashTable,const string text,const int k,const int lf);
 int hash_function(const int strIndex,const int* textCons,const int q1,const int q3);
 void makeSet(HashSlot* hashTable,const string* str,const int k,const int n,const int lf);
 void getSlotLength(HashSlot* hashTable,int k,int n);

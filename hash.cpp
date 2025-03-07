@@ -36,10 +36,15 @@ double getStdev(const int* cons,const double mean,const int n){
 }
 
 
-int hash_functionLessThirty(const string text,const int k){ // if n<30(not eligible to be a normal distribution) go here
+int hash_functionLessThirty(HashSlot* hashTable,const string text,const int k,const int lf){ // if n<30(not eligible to be a normal distribution) go here
 	int sum=0,i=0;	
-	while(i<2) sum += (int)text[i],++i; //allows some level of variance without bias for longer words
-	return sum%k;
+	sum = text.length()%k;
+	if(hashTable[sum].length >= lf){
+		sum=0;
+		while(i<2) sum += (int)text[i],++i; //allows some level of variance without bias for longer words
+		return sum%k;
+	}
+	return sum;
 }
 
 int hash_function(const int strIndex,const int* textCons,const int q1,const int q3){
@@ -55,7 +60,7 @@ int hash_function(const int strIndex,const int* textCons,const int q1,const int 
 
 void makeSet(HashSlot* hashTable,const string* str,const int k,const int n,const int lf){
 	int cons[11] = {0};                                                                                                                                                                                                                          int textCons[500];	
-//	if(n>=30){
+	if(n>=30){
 		for(int i=0; i<n; ++i){
 			int res = findConsonants(str[i]); 
 			textCons[i] = res;
@@ -99,7 +104,7 @@ void makeSet(HashSlot* hashTable,const string* str,const int k,const int n,const
 					++countThree;
 					break;
 			}
-			  // cout << "j: " << str[j] << ", slot: " << slot << ", availLen: " << availLen << endl;
+			// cout << "j: " << str[j] << ", slot: " << slot << ", availLen: " << availLen << endl;
 			//cout << "Count Ones: " << countOne << "\nCount Twos: " << countTwo << "\nCount Threes: " << countThree << "\nTotal Elements: " << elementcount <<  endl;
 			if( (countTwo > (int)(0.6827*n)) || ((countOne*1.0) > (int)(0.15865*n)) || ((countThree*1.0) > (int)(0.15865*n)) ){ //if quartiles are full, will add over entire list and will still be inorder
 				slot = 0;
@@ -125,112 +130,127 @@ void makeSet(HashSlot* hashTable,const string* str,const int k,const int n,const
 				}
 			}
 		}
+	}else{
+		for(int j=0; j<n; ++j){
+			int slot =  hash_functionLessThirty(hashTable,str[j],k,lf);
+			if(hashTable[slot].value == NULL){
+				hashTable[slot].value = new Node{str[j],nullptr};
+				hashTable[slot].length = 1;
+			}else{
+				Node* fer = hashTable[slot].value;
+				while(fer->next != nullptr) fer = fer->next;
+				(hashTable[slot].length)++;
+				fer->next = new Node{str[j],nullptr};
+			}
+
+		}
+	}
 		//cout << "Count Ones: " << countOne << "\nCount Twos: " << countTwo << "\nCount Threes: " << countThree << "\nTotal Elements: " << elementcount <<  endl; 
 		//cout << stdev << " stdev" << endl;
 }	
 
-void getSlotLength(HashSlot* hashTable,int k,int n){
-	int sum = 0;
-        for(int i=0; i<k; ++i){
-                cout << "Slot " << i << ": " << hashTable[i].length << endl;
-        }
-} 
-
-void printSet(HashSlot* hashTable,int k,int n){
-	//int sum = 0;
-	for(int i=0; i<k; ++i){
-		cout << "Slot " << i << ": ";
-		Node* fer = hashTable[i].value;
-		while(fer != nullptr){
-			//cout << "clean" << endl;
-			cout << fer->data << " ";
-			fer = fer->next;
+	void getSlotLength(HashSlot* hashTable,int k,int n){
+		int sum = 0;
+		for(int i=0; i<k; ++i){
+			cout << "Slot " << i << ": " << hashTable[i].length << endl;
 		}
-		cout<<endl;
-		//cout<< " (" << hashTable[i].length << ")" << endl;
-		//sum += hashTable[i].length;
+	} 
+
+	void printSet(HashSlot* hashTable,int k,int n){
+		//int sum = 0;
+		for(int i=0; i<k; ++i){
+			cout << "Slot " << i << ": ";
+			Node* fer = hashTable[i].value;
+			while(fer != nullptr){
+				//cout << "clean" << endl;
+				cout << fer->data << " ";
+				fer = fer->next;
+			}
+			cout<<endl;
+			//cout<< " (" << hashTable[i].length << ")" << endl;
+			//sum += hashTable[i].length;
+		}
+		//	cout << "total elements: " << sum << endl;
 	}
-//	cout << "total elements: " << sum << endl;
-}
 
-/*
-   void makeSet(HashSlot* hashTable,string* str,int k,int n,int lf){
+	/*
+	   void makeSet(HashSlot* hashTable,string* str,int k,int n,int lf){
 
-   int alphasplit = 26/k;
-   int alphasplitLast = ceil(26/(k/1.0));
+	   int alphasplit = 26/k;
+	   int alphasplitLast = ceil(26/(k/1.0));
 
-   if(alphasplit <= 0){
-   ++alphasplit;
-   ++alphasplitLast;
-   }
-   int ranges[k];
+	   if(alphasplit <= 0){
+	   ++alphasplit;
+	   ++alphasplitLast;
+	   }
+	   int ranges[k];
 
-   int alphacpy = alphasplit;
-   for(int i=0; i<k-1; ++i){
-   ranges[i] = alphacpy;
-   alphacpy += alphasplit;
-   }
-//cout << "functionhere3" << endl;
-ranges[k] = alphasplitLast+alphacpy;
+	   int alphacpy = alphasplit;
+	   for(int i=0; i<k-1; ++i){
+	   ranges[i] = alphacpy;
+	   alphacpy += alphasplit;
+	   }
+	//cout << "functionhere3" << endl;
+	ranges[k] = alphasplitLast+alphacpy;
 
-for(int i=0; i<n; ++i){
-//int slot = hash_function(str[i],k,hashTable,ranges,lf);
-int slot = hash_function(str[i],k,ranges,lf);
-//cout << "functionhere4" << endl;
-if(slot == -1){
-cout << "error finding pref position" << endl;
-continue;
-}
-(hashTable[slot].length)++;
+	for(int i=0; i<n; ++i){
+	//int slot = hash_function(str[i],k,hashTable,ranges,lf);
+	int slot = hash_function(str[i],k,ranges,lf);
+	//cout << "functionhere4" << endl;
+	if(slot == -1){
+	cout << "error finding pref position" << endl;
+	continue;
+	}
+	(hashTable[slot].length)++;
 
-if(hashTable[slot].value == NULL){
-hashTable[slot].value = new Node{str[i],nullptr};
-}else{
-Node* fer = hashTable[slot].value;
-while(fer->next != nullptr) fer = fer->next;
-fer->next = new Node{str[i],nullptr};
-}
-}
-}	
-int hash_function(string text,int k,HashSlot* hashTable,int lf) {
+	if(hashTable[slot].value == NULL){
+	hashTable[slot].value = new Node{str[i],nullptr};
+	}else{
+	Node* fer = hashTable[slot].value;
+	while(fer->next != nullptr) fer = fer->next;
+	fer->next = new Node{str[i],nullptr};
+	}
+	}
+	}	
+	int hash_function(string text,int k,HashSlot* hashTable,int lf) {
 
-int slot=0,i=0;
-//cout << "functionhere0" << endl;
-while(i<text.length()) text[i] = ((int)text[i] > 90) ? text[i] - 32 : text[i], i++; // converts all letters to uppercase
-int pos = (int)text[0] - 65;
-int hash = 0;
+	int slot=0,i=0;
+	//cout << "functionhere0" << endl;
+	while(i<text.length()) text[i] = ((int)text[i] > 90) ? text[i] - 32 : text[i], i++; // converts all letters to uppercase
+	int pos = (int)text[0] - 65;
+	int hash = 0;
 
-//cout << "functionhere1" << endl;
-for(char c : text){
-hash = (hash+(c-'A'+1)
-}
+	//cout << "functionhere1" << endl;
+	for(char c : text){
+	hash = (hash+(c-'A'+1)
+	}
 
 
-for(int j=0; j<k; ++j){
-if(pos < ranges[j]){
-if(pos < ranges[j]) return j;
-//cout << "functionhere2" << endl;
-}
-}
+	for(int j=0; j<k; ++j){
+	if(pos < ranges[j]){
+	if(pos < ranges[j]) return j;
+	//cout << "functionhere2" << endl;
+	}
+	}
 
 
-//cout << "functionhere3" << endl;
-return -1;
-}
+	//cout << "functionhere3" << endl;
+	return -1;
+	}
 
 
-void printSet(HashSlot* hashTable,int k,int n){
-cout<<endl;
-for(int i=0; i<k; ++i){
-cout << "Slot " << i << ": ";
-Node* fer = hashTable[i].value;
+	void printSet(HashSlot* hashTable,int k,int n){
+	cout<<endl;
+	for(int i=0; i<k; ++i){
+	cout << "Slot " << i << ": ";
+	Node* fer = hashTable[i].value;
 
-while(fer != nullptr){
-	//cout << "clean" << endl;
-	cout << fer->data << " ";
-	fer = fer->next;
-}	
-cout<<endl;
+	while(fer != nullptr){
+		//cout << "clean" << endl;
+		cout << fer->data << " ";
+		fer = fer->next;
+	}	
+	cout<<endl;
 }
 return;
 }
