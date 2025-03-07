@@ -19,18 +19,19 @@ struct HashSlot{
 	Node* value;
 };
 
+int findConsonants(string str);
+double getMean(const int* cons,const int n);
+double getStdev(const int* cons,const double mean,const int n);
+int hash_functionLessThirty(const string text,const int k);
+int hash_function(const int strIndex,const int* textCons,const int q1,const int q3);
+void makeSet(HashSlot* hashTable,const string* str,const int k,const int n,const int lf);
+void getSlotLength(HashSlot* hashTable,int k,int n);
+void printSet(HashSlot* hashTable,int k,int n);
 /*
-class LinkedList{
-	public:
-		LinkedList(int length,Node* head);
-		int getLength(){return length;}
-	private:
-		int length;
-                Node* head;
-
-};
-*/
-int hash_function(string text,int k,HashSlot* hashTable,int ranges[],int lf);
+int printConsonants(string str);
+int printVowels(string str);
+int hash_function(string text, int k, int ranges[], int lf);
 void makeSet(HashSlot* hashTable,string* str,int k,int n,int lf);
 void printSet(HashSlot* hashTable,int k,int n);
+*/
 #endif
